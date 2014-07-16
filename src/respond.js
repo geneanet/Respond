@@ -221,6 +221,19 @@
 		},
 		//find media blocks in css text, convert to style blocks
 		translate = function( styles, href, media ){
+			// Regex de type http(s)://machin.xxx(x)/
+			var regexdomain = /https?:\/\/.+\.[a-z]{3,4}\//gi ;
+			domain = regexdomain.exec(href);
+
+			var regeximport = /@import url\('\.\.(.+)'\);/gi ;
+			// Ajout des @import dans les feuilles à convertir
+			while ((otherstylesheet = regeximport.exec(styles)) != null) {
+				var importedhref = domain + otherstylesheet[1];
+				requestQueue.push( {
+				  href: importedhref,
+				  media: ''
+				} );
+			}
 			var qs = styles.replace( respond.regex.comments, '' )
 					.replace( respond.regex.keyframes, '' )
 					.match( respond.regex.media ),
