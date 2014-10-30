@@ -28,7 +28,7 @@
 
 (function(w) {
   "use strict";
-  var respond = {};
+  var respond = respond || {};
   w.respond = respond;
   respond.update = function() {};
   var requestQueue = [], xmlHttp = function() {
@@ -60,6 +60,7 @@
   }, isUnsupportedMediaQuery = function(query) {
     return query.replace(respond.regex.minmaxwh, "").match(respond.regex.other);
   };
+  respond.specialDomains = respond.specialDomains || {};
   respond.ajax = ajax;
   respond.queue = requestQueue;
   respond.unsupportedmq = isUnsupportedMediaQuery;
@@ -231,6 +232,17 @@
               href: href,
               media: media
             });
+          }
+          else {
+            var sdl = respond.specialDomains.length;
+            for (var isdl = 0; i < sdl; isdl++) { 
+              if (href.replace(RegExp.$1, "").split("/")[0] === sdl[i]) {
+                  href = href.replace(/^(?:\/\/|[^\/]+)*\//, "");
+                  requestQueue.push({
+                      href: href,
+                      media: media});
+              }
+            }
           }
         }
       }
