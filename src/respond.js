@@ -28,7 +28,7 @@
 
 (function(w) {
   "use strict";
-  var respond = respond || {};
+  var respond = window.respond || {};
   w.respond = respond;
   respond.update = function() {};
   var requestQueue = [], xmlHttp = function() {
@@ -157,6 +157,9 @@
     // Regex de type http(s)://machin.xxx(x)/
     var regexdomain = /https?:\/\/.+\.[a-z]{3,4}\//gi ;
     domain = regexdomain.exec(href);
+    if (domain == null) {
+        domain = "";
+    }
 
     var regeximport = /@import url\('\.\.(.+)'\);/gi ;
     // Ajout des @import dans les feuilles à convertir
@@ -235,9 +238,9 @@
           }
           else {
             var sdl = respond.specialDomains.length;
-            for (var isdl = 0; i < sdl; isdl++) { 
-              if (href.replace(RegExp.$1, "").split("/")[0] === sdl[i]) {
-                  href = href.replace(/^(?:\/\/|[^\/]+)*\//, "");
+            for (var isdl = 0; isdl < sdl; isdl++) { 
+              if (href.replace(RegExp.$1, "").split("/")[0] === respond.specialDomains[isdl]) {
+                  href = href.replace(/^(?:\/\/|[^\/]+)*/, "");
                   requestQueue.push({
                       href: href,
                       media: media});
